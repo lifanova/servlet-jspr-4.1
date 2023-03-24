@@ -23,27 +23,40 @@ public class MainServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        try {
-            final var path = req.getRequestURI();
-            final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.getWriter().print("Hello from servlet");
+        resp.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+        resp.setHeader("Content-Type", "application/json");
 
-            if (path.equals(API)) {
-                controller.all(resp);
-                return;
-            }
-
-            if (path.matches(API_D)) {
-                controller.getById(id, resp);
-                return;
-            }
-
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } catch (Exception e) {
-            e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        final var path = req.getRequestURI();
+        if (path.equals(API)) {
+            controller.all(resp);
+            return;
         }
     }
+
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+//        try {
+//            final var path = req.getRequestURI();
+//            final var id = Long.parseLong(path.substring(path.lastIndexOf("/")));
+//
+//            if (path.equals(API)) {
+//                controller.all(resp);
+//                return;
+//            }
+//
+//            if (path.matches(API_D)) {
+//                controller.getById(id, resp);
+//                return;
+//            }
+//
+//            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {

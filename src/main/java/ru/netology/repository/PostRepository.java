@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// Stub
 public class PostRepository {
     private final List<Post> postsList = new CopyOnWriteArrayList<>();
     private final AtomicInteger ID = new AtomicInteger(0);
@@ -21,16 +20,9 @@ public class PostRepository {
     }
 
     public Optional<Post> getById(long id) {
-        Post postCurrent = null;
-        for (Post post : postsList) {
-            if (post.getId() == id) {
-                postCurrent = post;
-            } else {
-                System.out.println("Нет такого ID!");
-            }
-        }
+        Optional<Post> currentPost = postsList.stream().filter(x -> x.getId() == id).findFirst();
 
-        return Optional.ofNullable(postCurrent);
+        return currentPost;
     }
 
     public Post save(Post post) {
