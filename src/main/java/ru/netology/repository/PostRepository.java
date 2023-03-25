@@ -12,9 +12,7 @@ public class PostRepository {
     private final AtomicInteger ID = new AtomicInteger(0);
 
     public List<Post> all() {
-        for (Post post : postsList) {
-            System.out.println("ID: " + post.getId() + ", CurrentContent:" + post.getContent());
-        }
+        postsList.forEach(System.out::println);
 
         return postsList;
     }
@@ -27,37 +25,33 @@ public class PostRepository {
 
     public Post save(Post post) {
         if (post.getId() == 0) {
-            ID.getAndIncrement();
-            post.setId(ID.get());
-            postsList.add(post);
-
-            return post;
+           return addPost(post);
         }
 
-        for (Post currentPost : postsList) {
-            if (currentPost.getId() == post.getId()) {
-                currentPost.setContent(post.getContent());
-            } else {
-                ID.getAndIncrement();
-                System.out.println("Постов с таким ID не существует, новый ID: " + ID.get());
-                post.setId(ID.get());
-            }
-        }
+        postsList.stream().filter(x -> x.getId() == post.getId())
+                .findFirst().get().setContent(post.getContent());
 
+        return post;
+    }
+
+    private Post addPost(Post post) {
+        ID.getAndIncrement();
+        post.setId(ID.get());
         postsList.add(post);
 
         return post;
     }
 
     public boolean removeById(long id) {
-        boolean flag = false;
-        for (Post post : postsList) {
-            if (post.getId() == id) {
-                postsList.remove(post);
-                flag = true;
-            }
+        Optional<Post> post = postsList.stream().filter(x -> x.getId() == id).findFirst();
+
+        post.ifPresent(postsList::remove);
+
+        if (post.isPresent()) {
+            postsList.remove(post);
+            return true;
         }
 
-        return flag;
+        return false;
     }
 }
